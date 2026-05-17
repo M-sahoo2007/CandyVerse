@@ -7,8 +7,25 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'changeme1234567890')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# Default to False for safety in production; set DEBUG=True locally via env var when needed.
+DEBUG = os.getenv('DEBUG', 'False').strip().lower() in ('true', '1', 'yes')
+# Read ALLOWED_HOSTS from env or fall back to localhost and Render hosts.
+allowed_hosts = os.getenv('ALLOWED_HOSTS') or os.getenv('DJANGO_ALLOWED_HOSTS') or 'localhost,127.0.0.1,candyverse-qq05.onrender.com,.onrender.com'
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(',') if host.strip()]
+# Ensure Render host is always allowed.
+if 'candyverse-qq05.onrender.com' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('candyverse-qq05.onrender.com')
+if '.onrender.com' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('.onrender.com')
+render_url = os.getenv('RENDER_EXTERNAL_URL') or os.getenv('RENDER_EXTERNAL_HOSTNAME')
+if render_url:
+    try:
+        from urllib.parse import urlparse
+        host = urlparse(render_url).netloc or render_url
+    except Exception:
+        host = render_url
+    if host and host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(host)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
