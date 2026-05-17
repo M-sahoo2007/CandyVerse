@@ -9,8 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'changeme1234567890')
 # Default to False for safety in production; set DEBUG=True locally via env var when needed.
 DEBUG = os.getenv('DEBUG', 'False').strip().lower() in ('true', '1', 'yes')
-# Read ALLOWED_HOSTS from env or fall back to localhost.
-allowed_hosts = os.getenv('ALLOWED_HOSTS') or os.getenv('DJANGO_ALLOWED_HOSTS') or 'localhost,127.0.0.1'
+# Read ALLOWED_HOSTS from env or fall back to localhost and Render hosts.
+allowed_hosts = os.getenv('ALLOWED_HOSTS') or os.getenv('DJANGO_ALLOWED_HOSTS') or 'localhost,127.0.0.1,candyverse-qq05.onrender.com,.onrender.com'
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(',') if host.strip()]
 # Always allow Render subdomains.
 if '.onrender.com' not in ALLOWED_HOSTS:
