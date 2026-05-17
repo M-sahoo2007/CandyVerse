@@ -8,10 +8,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'changeme1234567890')
 # Default to False for safety in production; set DEBUG=True locally via env var when needed.
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-# Read ALLOWED_HOSTS from env or fall back to localhost; also add Render's external URL host if provided.
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-# this run at render lunch 
+DEBUG = os.getenv('DEBUG', 'False').strip().lower() in ('true', '1', 'yes')
+# Read ALLOWED_HOSTS from env or fall back to localhost and the current Render host.
+allowed_hosts = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,candyverse-qq05.onrender.com')
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(',') if host.strip()]
 render_url = os.getenv('RENDER_EXTERNAL_URL') or os.getenv('RENDER_EXTERNAL_HOSTNAME')
 if render_url:
     try:
@@ -21,7 +21,6 @@ if render_url:
         host = render_url
     if host and host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(host)
-# upto this code urls
 
 INSTALLED_APPS = [
     'django.contrib.admin',
