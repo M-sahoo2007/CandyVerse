@@ -12,7 +12,9 @@ DEBUG = os.getenv('DEBUG', 'False').strip().lower() in ('true', '1', 'yes')
 # Read ALLOWED_HOSTS from env or fall back to localhost and Render hosts.
 allowed_hosts = os.getenv('ALLOWED_HOSTS') or os.getenv('DJANGO_ALLOWED_HOSTS') or 'localhost,127.0.0.1,candyverse-qq05.onrender.com,.onrender.com'
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(',') if host.strip()]
-# Always allow Render subdomains.
+# Ensure Render host is always allowed.
+if 'candyverse-qq05.onrender.com' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('candyverse-qq05.onrender.com')
 if '.onrender.com' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('.onrender.com')
 render_url = os.getenv('RENDER_EXTERNAL_URL') or os.getenv('RENDER_EXTERNAL_HOSTNAME')
